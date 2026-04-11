@@ -79,24 +79,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    if (location != null) {
+        fusedLocationClient.getCurrentLocation(
+                com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+                null
+        ).addOnSuccessListener(location -> {
+            if (location != null) {
 
-                        LatLng current = new LatLng(
-                                location.getLatitude(),
-                                location.getLongitude());
+                LatLng current = new LatLng(
+                        location.getLatitude(),
+                        location.getLongitude());
 
-                        // Add marker
-                        mMap.addMarker(new MarkerOptions()
-                                .position(current)
-                                .title("You are here"));
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(current)
+                        .title("You are here"));
+                marker.showInfoWindow();
 
-                        // Move camera
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
-                    }else {
-                        Toast.makeText(this, "Location is NULL", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+            } else {
+                Toast.makeText(this, "Location still NULL", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
